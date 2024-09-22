@@ -83,15 +83,21 @@ flask run
 
 The app will be available at `http://127.0.0.1:5000/`.
 
-### 6. Customize Question Generation
 
-In the user interface, you can specify custom parameters for question generation. These include:
+### Dynamic Module Selection
 
-- **Temperature**: Controls the randomness of the model's output. A higher value (e.g., 1) produces more creative results, while a lower value (e.g., 0.2) produces more focused results.
-- **Top-K**: Limits the next word's probability distribution to the top-K most likely tokens.
-- **Top-P**: Limits the probability of selecting the next token based on a cumulative probability threshold.
+In the file `forms.py`, you can specify the available modules for dynamic selection on the website. The `available_modules` list at the top of the file allows you to add modules that can be displayed in the application. Each entry in the list consists of two elements: the first is the **prefix name** used for database identification, and the second is the **display name** shown on the website. To add more modules, simply append them to the list following the existing format.
 
-These parameters can be adjusted or set to default values.
+Example:
+```python
+# Dynamic selection of modules
+available_modules = [
+    ('datascience', 'Data Science'),
+    ('algodat', 'Algorithms and Data Structures'),
+    # Add more modules here
+]
+```
+
 
 ## License
 
