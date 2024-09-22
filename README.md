@@ -80,7 +80,7 @@ For the application to extract text from PDF files using Optical Character Recog
 
 #### Tesseract Installation:
 - **Windows**: You can download Tesseract from [here](https://sourceforge.net/projects/tesseract-ocr-alt/files/).
-   For further information, visit the orignal GitHub-Page [here](https://github.com/tesseract-ocr/tessdoc/blob/main/README.md).
+   For further information visit the orignal GitHub-Page [here](https://github.com/tesseract-ocr/tessdoc/blob/main/README.md).
 - **Linux**: Use the following command:
   ```bash
   sudo apt-get install tesseract-ocr
