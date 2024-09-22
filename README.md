@@ -15,8 +15,8 @@
 Before running this project, ensure you have the following:
 
 1. **Python 3.12+** installed on your system.
-2. A Google Cloud Project set up with access to Google Forms API and Generative AI API.
-3. **gen-lang-client-XXXXX.json** file for authentication with Google APIs (explained below).
+2. A Google Cloud Project set up with **access to Google APIs** (explained below).
+3. **gen-lang-client-XXXXX.json** file for authentication with Google APIs.
 4. **email_give_edit_permission.json** file for assigning permissions (explained below).
 5. **tesseract** installed and included in your system's PATH (explained below).
 
@@ -110,7 +110,16 @@ available_modules = [
 ```
 When using a new modul in your application, new tables will automatically be created under `prefix_text` and `prefix_questions`.
 
-### 7. Run the application
+### 7. Required Google APIs
+- Drive Labels API					
+- Gemini for Google Cloud API					
+- Generative Language API					
+- Google Drive API					
+- Google Forms API
+
+You can enable this in your Google Cloud Project under "Enabled APIs and services", press "+ ENABLE APIS AND SERVICES" and search for the required APIs.
+
+### 8. Run the application
 
 After setting up the environment and required files, you can run the application locally.
 
