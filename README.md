@@ -79,7 +79,8 @@ pip install -r requirements.txt
 For the application to extract text from PDF files using Optical Character Recognition (OCR), you will need to install **Tesseract**. This is especially necessary if the PDFs contain images or scanned documents rather than selectable text.
 
 #### Tesseract Installation:
-- **Windows**: You can download Tesseract from [here](https://github.com/tesseract-ocr/tesseract).
+- **Windows**: You can download Tesseract from [here](https://sourceforge.net/projects/tesseract-ocr-alt/files/).
+   For further information, visit the orignal GitHub-Page [here](https://github.com/tesseract-ocr/tessdoc/blob/main/README.md).
 - **Linux**: Use the following command:
   ```bash
   sudo apt-get install tesseract-ocr
