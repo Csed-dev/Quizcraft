@@ -24,7 +24,7 @@ Before running this project, ensure you have the following:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/quizcraft.git
+git clone https://github.com/Csed-dev/quizcraft.git
 cd quizcraft
 ```
 
