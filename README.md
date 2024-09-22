@@ -95,18 +95,7 @@ After installation, make sure the `tesseract` executable is available in your sy
 pip install pytesseract
 ```
 
-### 6. Run the application
-
-After setting up the environment and required files, you can run the application locally.
-
-```bash
-flask run
-```
-
-The app will be available at `http://127.0.0.1:5000/`.
-
-
-### Dynamic Module Selection
+### 6. Dynamic Module Selection
 
 In the file `forms.py`, you can specify the available modules for dynamic selection on the website. The `available_modules` list at the top of the file allows you to add modules that can be displayed in the application. Each entry in the list consists of two elements: the first is the **prefix name** used for database identification, and the second is the **display name** shown on the website. To add more modules, simply append them to the list following the existing format.
 
@@ -119,6 +108,17 @@ available_modules = [
     # Add more modules here
 ]
 ```
+When using a new modul in your application, new tables will automatically be created under `prefix_text` and `prefix_questions`.
+
+### 7. Run the application
+
+After setting up the environment and required files, you can run the application locally.
+
+```bash
+flask run
+```
+
+The app will be available at `http://127.0.0.1:5000/`.
 
 
 ## License
