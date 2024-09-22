@@ -18,6 +18,7 @@ Before running this project, ensure you have the following:
 2. A Google Cloud Project set up with access to Google Forms API and Generative AI API.
 3. **gen-lang-client-XXXXX.json** file for authentication with Google APIs (explained below).
 4. **email_give_edit_permission.json** file for assigning permissions (explained below).
+5. **tesseract** installed and included in your system's PATH (explained below).
 
 ## Setup
 
@@ -73,7 +74,27 @@ pip install -r requirements.txt
    GOOGLE_API_KEY_QUIZCRAFT=your_google_api_key_here
    ```
 
-### 5. Run the application
+### 5. OCR for Text Extraction
+
+For the application to extract text from PDF files using Optical Character Recognition (OCR), you will need to install **Tesseract**. This is especially necessary if the PDFs contain images or scanned documents rather than selectable text.
+
+#### Tesseract Installation:
+- **Windows**: You can download Tesseract from [here](https://github.com/tesseract-ocr/tesseract).
+- **Linux**: Use the following command:
+  ```bash
+  sudo apt-get install tesseract-ocr
+  ```
+- **MacOS**: Use Homebrew to install Tesseract:
+  ```bash
+  brew install tesseract
+  ```
+
+After installation, make sure the `tesseract` executable is available in your system's PATH. The application uses the **pytesseract** Python library, which interfaces with Tesseract for OCR functionality. Ensure that you also install the **pytesseract** package via pip:
+```bash
+pip install pytesseract
+```
+
+### 6. Run the application
 
 After setting up the environment and required files, you can run the application locally.
 
