@@ -123,6 +123,7 @@ celerybeat.pid
 
 # Environments
 .env
+gen-lang-client-0625082558-a958e1c7fe1e.json
 .venv
 env/
 venv/
