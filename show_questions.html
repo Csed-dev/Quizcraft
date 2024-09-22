@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Extrahierte Fragen
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center my-5">
+        <div class="card shadow p-4" style="width: 100%; max-width: 800px; border-radius: 10px;">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-3">Extrahierte Fragen{% if module_name %} für {{ module_name }}{% endif %}</h1>
+
+                <!-- Dropdown-Menü zur Auswahl des Moduls -->
+                <form method="POST" action="{{ url_for('show_questions') }}" class="mb-4">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="form-group mb-3">
+                        <strong>{{ form.module.label(class="form-label") }}<span class="text-danger">*</span></strong>
+                        {{ form.module(class="form-control") }}
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <strong>{{ form.pages.label(class="form-label") }}</strong>
+                        <span data-bs-toggle="tooltip" data-bs-placement="right" 
+                              title="Geben Sie die Seiten als durch Kommas und / oder Bindestrich getrennte Liste ein, z.B. 5,6,10-12. Sie können Leerzeichen einfügen oder weglassen.">
+                            <i class="bi bi-question-circle" style="font-size: 1.2rem; color: #007bff;"></i>
+                        </span>
+                        {{ form.pages(class="form-control", placeholder="5,6,10-12") }}
+                    </div>
+
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary w-100">Fragen anzeigen</button>
+                    </div>
+                </form> 
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                        {% for field, errors in form.errors.items() %}
+                            <li>{{ field }}: {{ errors }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                
+                <div class="container mt-3">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <!-- Angezeigte extrahierte Fragen mit Checkboxen zur Auswahl -->
+                {% if questions %}
+
+                    <!-- Formular zur Sortierung -->
+                    <form method="GET" action="{{ url_for('show_questions') }}" class="mb-3">
+                        {{ form.hidden_tag() }}
+                        <input type="hidden" name="module" value="{{ module_name }}">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="sort_starred" id="sortStarred" {% if sort_starred %}checked{% endif %}>
+                            <label class="form-check-label" for="sortStarred">
+                                Zeige Favoriten zuerst
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-secondary btn-sm mt-2">Anwenden</button>
+                    </form>
+
+                    <!-- Formular für die Fragenliste und Aktionen -->
+                    <form method="POST" action="{{ url_for('show_questions') }}">
+                        {{ form.hidden_tag() }}
+                        <input type="hidden" name="module" value="{{ module_name }}">
+
+                        <div class="mt-4">
+                            <h2 class="text-center">Extrahierte Fragen</h2>
+
+                            <!-- Checkbox zum Auswählen aller Fragen -->
+                            <div class="form-check text-center mb-3">
+                                <input class="form-check-input" type="checkbox" id="selectAllQuestions" onchange="toggleSelectAll(this)">
+                                <label class="form-check-label" for="selectAllQuestions">Alle Fragen auswählen</label>
+                            </div>
+
+                            <div class="form-group text-center my-4">
+                                <button type="submit" name="delete" value="delete" class="btn btn-danger">Ausgewählte Fragen löschen</button>
+                                <button type="submit" name="create_form" value="create_form" class="btn btn-success">Google Form erstellen</button>
+                            </div>
+
+                            <ul class="list-group">
+                                {% for question in questions %}
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <input type="checkbox" class="form-check-input question-checkbox" name="selected_questions" value="{{ question.id }}">
+                                        <i class="bi bi-star{{ '-fill' if question.starred else '' }} ms-3 me-2 star-icon"
+                                           data-question-id="{{ question.id }}" style="cursor: pointer;"></i>
+                                        <div>
+                                            <strong>Seite:</strong> {{ question.seite }} <strong>Id:</strong> {{ question.id }} <br>
+                                            <strong>Frage:</strong> {{ question.frage }} <br>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </form>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript-Code -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var moduleName = "{{ module_name }}";  // Modulname aus dem Template
+
+            var starIcons = document.querySelectorAll('.star-icon');
+            starIcons.forEach(function(icon) {
+                icon.addEventListener('click', function() {
+                    var questionId = this.getAttribute('data-question-id');
+                    var isStarred = this.classList.contains('bi-star-fill');
+                    var iconElement = this;
+
+                    // Sendet eine AJAX-Anfrage, um den Sternchen-Status zu toggeln
+                    fetch('/toggle_starred', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token() }}'  // Falls CSRF-Schutz aktiviert ist
+                        },
+                        body: JSON.stringify({
+                            'question_id': questionId,
+                            'starred': !isStarred,
+                            'module': moduleName
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Icon-Klasse toggeln
+                            if (isStarred) {
+                                iconElement.classList.remove('bi-star-fill');
+                                iconElement.classList.add('bi-star');
+                            } else {
+                                iconElement.classList.remove('bi-star');
+                                iconElement.classList.add('bi-star-fill');
+                            }
+                        } else {
+                            alert('Fehler beim Aktualisieren des Sternchen-Status.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Fehler beim Senden der Anfrage.');
+                    });
+                });
+            });
+        });
+
+        // Funktion zum Auswählen aller Fragen
+        function toggleSelectAll(source) {
+            var checkboxes = document.querySelectorAll('.question-checkbox');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = source.checked;
+            });
+        }
+
+    </script>
+{% endblock %}

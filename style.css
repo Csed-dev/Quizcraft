@@ -1,0 +1,39 @@
+:root {
+    --bs-primary: #3D52A0; /* Neue Primary Color */
+    --bs-primary-hover: #2c3a75; /* Dunklere Farbe für Hover */
+    color: #27293b; /* Schriftfarbe */
+
+}
+
+body {
+    background: radial-gradient(circle at center, #EDE8F5, #7091E6);
+    background-attachment: fixed; /* Fixierter Hintergrund */
+    background-size: cover; /* Deckender Verlauf */
+}
+
+.navbar {
+    background-color: #3D52A0; /* Navbar-Farbe anpassen */
+}
+
+.navbar .nav-link {
+    font-weight: bold; /* Fettgedruckte Links */
+}
+
+.navbar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Heller Hover-Effekt */
+    border-radius: 5px; /* Abgerundete Ecken bei Hover */
+}
+
+.btn-primary {
+    background-color: var(--bs-primary); /* Neue Primary Color */
+    border-color: var(--bs-primary); /* Gleiche Randfarbe */
+}
+
+.btn-primary:hover {
+    background-color: var(--bs-primary-hover); /* Dunklere Farbe bei Hover */
+    border-color: var(--bs-primary-hover); /* Gleiche Randfarbe bei Hover */
+}
+
+.ccolor {
+    color:#7091E6
+}

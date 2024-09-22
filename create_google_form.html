@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Erstelle Google Form
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center my-5">
+        <div class="card shadow p-4" style="width: 100%; max-width: 600px; border-radius: 10px;">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-3">Google Formular erstellen</h1>
+                <form method="POST" action="{{ url_for('create_google_form') }}" onsubmit="showSpinner()"">
+                    {{ form.hidden_tag() }}
+
+                    <div class="form-group mb-3">
+                        <strong>{{ form.module_name.label(class="form-label") }}</strong>
+                        {{ form.module_name(class="form-control") }}
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <strong>{{ form.module.label(class="form-label") }}<span class="text-danger">*</span></strong>
+                        {{ form.module(class="form-control") }}
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <strong>{{ form.pages.label(class="form-label") }}</strong>
+                        <span data-bs-toggle="tooltip" data-bs-placement="right"
+                            title="Bitte entweder Seitenzahlen oder Fragen-IDs angeben, nicht beides.">
+                            <i class="bi bi-question-circle" style="font-size: 1.2rem; color: #007bff;"></i>
+                        </span>
+                        {{ form.pages(class="form-control", placeholder="5,6,10-12") }}
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <strong>{{ form.ids.label(class="form-label") }}</strong>
+                        <span data-bs-toggle="tooltip" data-bs-placement="right"
+                            <i class="bi bi-question-circle" style="font-size: 1.2rem; color: #007bff;"></i>
+                        </span>
+                        {{ form.ids(class="form-control", placeholder="1,2,5-7") }}
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <strong>{{ form.first_name.label(class="form-label") }}</strong>
+                        {% for subfield in form.first_name %}
+                            <div class="form-check">
+                                {{ subfield(class="form-check-input name-checkbox") }}
+                                <label class="form-check-label">{{ subfield.label.text }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Google Form Erstellen</button>
+                    </div>
+                </form>
+
+                <!-- Spinner, der beim Erstellen des Formulars angezeigt wird -->
+                <div id="loadingSpinner" class="text-center mt-3" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Lädt...</span>
+                    </div>
+                    <p class="mt-2">
+                        Das Formular wird erstellt, bitte warten...
+                    </p>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

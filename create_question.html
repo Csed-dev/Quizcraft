@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create Questions
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center my-5">
+        <div class="card shadow p-4" style="width: 100%; max-width: 600px; border-radius: 10px;">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-3">Fragen Generieren</h1>
+                <form method="POST" action="{{ url_for('create_question') }}" onsubmit="showSpinner()">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="form-group mb-3">
+                        <strong>{{ form.module.label(class="form-label") }}<span class="text-danger">*</span></strong>
+                        {{ form.module(class="form-control") }}
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <strong>{{ form.pages.label(class="form-label") }}<span class="text-danger">*</span><span data-bs-toggle="tooltip" data-bs-placement="right" 
+                            title="Geben Sie die Seiten als durch Kommas und / oder Bindestrich getrennte Liste ein, z.B. 5,6,10-12. Sie können Leerzeichen einfügen oder weglassen.">
+                          <i class="bi bi-question-circle" style="font-size: 1.2rem; color: #007bff;"></i>
+                      </span></strong>
+                        {{ form.pages(class="form-control", placeholder="5,6,10-12") }}
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <strong>{{ form.temperature.label(class="form-label") }}</strong>
+                        <span data-bs-toggle="tooltip" data-bs-placement="right" 
+                              title="Temperatur steuert die Zufälligkeit der Antworten. Je höher der Wert, desto kreativer die Antworten.">
+                            <i class="bi bi-question-circle" style="font-size: 1.2rem; color: #007bff;"></i>
+                        </span>
+                        <div class="input-group">
+                            <button type="button" class="btn btn-outline-dark" onclick="decreaseValue('temperature', 0.1)">-</button>
+                            {{ form.temperature(class="form-control", step="0.05", min="0", max="1") }}
+                            <button type="button" class="btn btn-outline-dark" onclick="increaseValue('temperature', 0.1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <strong>{{ form.top_p.label(class="form-label") }}</strong>
+                        <span data-bs-toggle="tooltip" data-bs-placement="right" 
+                              title="Top-P beschränkt die Auswahl von Tokens auf die kumulative Wahrscheinlichkeit.">
+                            <i class="bi bi-question-circle" style="font-size: 1.2rem; color: #007bff;"></i>
+                        </span>
+                        <div class="input-group">
+                            <button type="button" class="btn btn-outline-dark" onclick="decreaseValue('top_p', 0.05)">-</button>
+                            {{ form.top_p(class="form-control", step="0.05", min="0", max="1") }}
+                            <button type="button" class="btn btn-outline-dark" onclick="increaseValue('top_p', 0.05)">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <strong>{{ form.top_k.label(class="form-label") }}<span class="text-danger">*</span><span data-bs-toggle="tooltip" data-bs-placement="right" 
+                            title="Legt fest, aus wie vielen Top-Token der nächste Token ausgewählt wird. Ein Wert von 0 deaktiviert diese Beschränkung.">
+                            <i class="bi bi-question-circle" style="font-size: 1.2rem; color: #007bff;"></i>
+                        </span></strong>
+                        {{ form.top_k(class="form-control", placeholder="40") }}
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <strong>{{ form.max_output_tokens.label(class="form-label") }}<span class="text-danger">*</span><span data-bs-toggle="tooltip" data-bs-placement="right" 
+                            title="Die maximale Anzahl an Tokens, die das Modell in der Antwort generieren darf. 100 Tokens entsprechen etwa 20 Wörtern.">
+                            <i class="bi bi-question-circle" style="font-size: 1.2rem; color: #007bff;"></i>
+                        </span></strong>
+                        {{ form.max_output_tokens(class="form-control", placeholder="256") }}
+                    </div>
+                    
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Fragen erstellen</button>
+                    </div>
+                </form>
+
+                <!-- Spinner, der beim Erstellen der Fragen angezeigt wird -->
+                <div id="loadingSpinner" class="text-center mt-3" style="display:none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Lädt...</span>
+                    </div>
+                    <p class="mt-2">
+                        Die Fragen werden generiert, bitte warten...
+                    </p>
+                </div>
+
+                <!-- Flash-Nachrichten -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="mt-4">
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function increaseValue(fieldId, step) {
+            var field = document.getElementById(fieldId);
+            var value = parseFloat(field.value) || 0;
+            if (value < parseFloat(field.max)) {
+                field.value = (value + step).toFixed(2);
+            }
+        }
+    
+        function decreaseValue(fieldId, step) {
+            var field = document.getElementById(fieldId);
+            var value = parseFloat(field.value) || 0;
+            if (value > parseFloat(field.min)) {
+                field.value = (value - step).toFixed(2);
+            }
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}
+Quick Form Generator
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center my-5">
+        <div class="card shadow p-4" style="width: 100%; max-width: 600px; border-radius: 10px;">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-3">Quick Form Generator</h1>
+                <form method="POST" enctype="multipart/form-data" onsubmit="showSpinner()">
+                    {{ form.hidden_tag() }}
+                    <p class="text-center text-muted small">(Es wird nichts gespeichert)</p>
+                    
+                    <div class="form-group mb-3">
+                        <strong>{{ form.module_name.label(class="form-label") }}</strong>
+                        {{ form.module_name(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <strong>{{ form.pdf_file.label(class="form-label") }}<span class="text-danger">*</span></strong>
+                        {{ form.pdf_file }}
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <strong>{{ form.pages.label(class="form-label") }}</strong>
+                        <span data-bs-toggle="tooltip" data-bs-placement="right" 
+                              title="Geben Sie die Seiten als durch Kommas und / oder Bindestrich getrennte Liste ein, z.B. 5,6,10-12. Sie können Leerzeichen einfügen oder weglassen.">
+                            <i class="bi bi-question-circle" style="font-size: 1.2rem; color: #007bff;"></i>
+                        </span>
+                        {{ form.pages(class="form-control", placeholder="5,6,10-12")}}
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <strong>{{ form.first_name.label(class="form-label") }}</strong>
+                        {% for subfield in form.first_name %}
+                            <div class="form-check">
+                                {{ subfield(class="form-check-input name-checkbox") }}
+                                <label class="form-check-label">{{ subfield.label.text }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group text-center">
+                        {{ form.submit(class="btn btn-primary btn-lg w-100") }}
+                    </div>
+                </form>
+                
+                <!-- Spinner, der beim Erstellen des Formulars angezeigt wird -->
+                <div id="loadingSpinner" class="text-center mt-3" style="display:none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Lädt...</span>
+                    </div>
+                    <p class="mt-2">
+                        Das Formular wird erstellt, bitte warten...<br>
+                        10 Seiten / 60 Sekunden
+                    </p>
+                </div>
+
+                {% if google_form_url %}
+                    <div class="mt-4 text-center">
+                        <h3>Ihr Google Formular:</h3>
+                        <a href="{{ google_form_url }}" target="_blank">{{ google_form_url }}</a>
+                        <div class="mt-3">
+                            <img src="{{ url_for('download_qr') }}" alt="QR Code" class="img-fluid">
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>     
+    
+{% endblock %}

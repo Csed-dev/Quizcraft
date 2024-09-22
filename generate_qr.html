@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}
+    QR-Code Generator
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center my-5">
+    <div class="card shadow p-4" style="width: 100%; max-width: 600px; border-radius: 10px;">
+        <div class="card-body text-center">
+            <h1 class="card-title">QR-Code Generator</h1>
+            <form method="POST" action="{{ url_for('generate_qr') }}">
+                {{ csrf_token() }}
+                <div class="form-group mb-3">
+                    <label for="link"><strong>Geben Sie den Link ein:</strong></label>
+                    <input type="url" class="form-control" id="link" name="link" placeholder="https://example.com" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg">QR-Code generieren</button>
+            </form>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if qr_code %}
+            <div class="mt-5">
+                <h3>QR-Code zum Link</h3>
+                <p>Scannen Sie den QR-Code, um den Link zu öffnen:</p>
+                <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+                <p class="mt-3">
+                    <a href="{{ url_for('download_qr', link=link) }}" class="btn btn-info btn-lg">QR-Code herunterladen</a>
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

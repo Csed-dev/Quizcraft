@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center my-5">
+    <div class="card shadow p-4" style="width: 100%; max-width: 600px; border-radius: 10px;">
+        <div class="card-body text-center">
+            <h1 class="card-title mb-3">Formular erfolgreich generiert!</h1>
+            <div class="alert alert-success mt-4">
+                <p>Das Google Formular wurde erfolgreich erstellt.</p>
+                <p><a href="{{ google_form_url }}" target="_blank" class="btn btn-primary btn-lg">Google Formular öffnen</a></p>
+                
+            </div>
+            
+             <!-- Link Kopieren Button -->
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" id="googleFormLink" value="{{ google_form_url }}" readonly>
+                <button class="btn btn-outline-secondary" type="button" id="copyButton" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit-Link kopieren">
+                    <i class="bi bi-clipboard"></i>
+                </button>
+            </div>
+
+            <div class="mt-4 text-center">
+                <h3>QR-Code zum Formular</h3>
+                {% if session['qr_code'] %}
+                    <p class="mt-3">
+                        <a href="{{ url_for('download_qr', qr_code=qr_code) }}" class="btn btn-info btn-lg">QR-Code herunterladen</a>
+                    </p>
+                    <p>Scanne den QR-Code, um das Formular zu öffnen:</p>
+                    <img src="data:image/png;base64,{{ session['qr_code'] }}" alt="QR Code">            </div>
+                {% else %}
+                    <p>Kein QR-Code verfügbar.</p>
+                {% endif %}
+            </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var copyButton = document.getElementById('copyButton');
+    var googleFormLink = document.getElementById('googleFormLink');
+
+    copyButton.addEventListener('click', function() {
+        // Kopieren des Links in die Zwischenablage
+        googleFormLink.select();
+        googleFormLink.setSelectionRange(0, 99999); // Für mobile Geräte
+
+        navigator.clipboard.writeText(googleFormLink.value).then(function() {
+            // Erfolgsmeldung anzeigen (optional)
+            // alert('Link wurde in die Zwischenablage kopiert!');
+            }, function(err) {
+                // Fehlermeldung anzeigen
+                alert('Fehler beim Kopieren des Links: ' + err);
+            });
+        });
+    });
+
+</script>
+{% endblock %}
