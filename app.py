@@ -3,7 +3,6 @@ import io
 import base64
 import json
 import PyPDF2
-# import qrcode
 from flask_wtf import CSRFProtect
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, session, url_for, flash, send_file, jsonify
@@ -481,11 +480,6 @@ def create_google_form():
 #         return render_template('generate_qr.html', qr_code=qr_code_base64, link=link)
 #     else:
 #         return render_template('generate_qr.html')
-
-# @app.context_processor
-# def inject_memes():
-#     memes = get_memes()
-#     return dict(memes=memes)
 
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):

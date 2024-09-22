@@ -1,12 +1,12 @@
 [
     {
-        "first_name": "Pascal",
-        "last_name": "Laube",
-        "email": "Pascal.Laube@hs-furtwangen.de"
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john.doe@example.com"
     },
     {
-        "first_name": "Jozef",
-        "last_name": "Mikyta",
-        "email": "mikyta.mikyta@gmail.com"
+        "first_name": "Jane",
+        "last_name": "Smith",
+        "email": "jane.smith@example.com"
     }
 ]
