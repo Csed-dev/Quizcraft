@@ -108,7 +108,7 @@ available_modules = [
     # Add more modules here
 ]
 ```
-When using a new modul in your application, new tables will automatically be created under `prefix_text` and `prefix_questions`.
+When using a new modul in your application, new tables will automatically be created under `prefix_texts` and `prefix_questions`.
 
 ### 7. Required Google APIs
 - Drive Labels API					
