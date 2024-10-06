@@ -37,12 +37,12 @@ def generate_questions(model, pdf_text):
     "Kenntnisse erforderlich sind.\n\n"
     
     "Die Fragen sollen das Verständnis von Informatik-Studierenden prüfen und thematisch relevant zur Vorlesung sein. "
-    "Jede Frage muss eindeutig der Seite zugeordnet werden, auf der die entsprechenden Informationen im Text stehen.\n\n"
-    "Wähle eine Sinnvolle Anzahl an Fragen aus. Beispielsweise ist es bei manchen Seiten sinnvoller zwei Fragen zu stellen und bei anderen nur eine."
+    "Jede Frage muss eindeutig der Seite zugeordnet werden, auf der die entsprechenden Informationen im Text stehen."
+    "Wähle eine Sinnvolle Anzahl an Fragen aus. Beispielsweise ist es bei manchen Seiten sinnvoller zwei Fragen zu stellen und bei anderen nur eine.\n\n"
     
     "Vermeide Fragen wie: 'Welche Informationen stehen auf Seite X?' oder 'Welches Datum stand auf der Folie?'. "
     "Diese Fragen sind nicht sinnvoll, da sie nicht von einer Person ohne direkten Textzugriff beantwortet werden können. "
-    "Stattdessen soll die Frage den Inhalt selbst betreffen, z.B.: 'Was ist Data Science?', nicht: 'Auf welcher Folie wird Data Science erklärt?'.\n\n"
+    "Stattdessen soll die Frage den Inhalt selbst betreffen, z.B.: 'Was ist Data Science?', und nicht: 'Auf welcher Folie wird Data Science erklärt?'.\n\n"
         
         "Anleitung:\n"
         "1. Lies den bereitgestellten Text aufmerksam durch.\n"
@@ -65,12 +65,20 @@ def generate_questions(model, pdf_text):
         "[\n"
         "  {\n"
         '    "seite": "2",\n'
-        '    "frage": "Was ist die Definition eines Algorithmus?"\n'
+        '    "frage": "Wofür ist der p-Wert da?"\n'
         "  },\n"
         "  {\n"
         '    "seite": "2",\n'
-        '    "frage": "Welche Rolle spielt die Datenstruktur in der Informatik?"\n'
-        "  }\n"
+        '    "frage": "Welche Rolle spielt Data Science in der heutigen Welt?"\n'
+        "  },\n"
+        "  {\n"
+        '    "seite": "3",\n'
+        '    "frage": "Was bestimmt die Standartabweichung?"\n'
+        "  },\n"
+        "  {\n"
+        '    "seite": "2",\n'
+        '    "frage": "Was ist das Multi-Source-Problem?"\n'
+        "  },\n"
         "]\n"
         
         "Wichtig:\n"
