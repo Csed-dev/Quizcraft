@@ -38,6 +38,7 @@ def generate_questions(model, pdf_text):
     
     "Die Fragen sollen das Verständnis von Informatik-Studierenden prüfen und thematisch relevant zur Vorlesung sein. "
     "Jede Frage muss eindeutig der Seite zugeordnet werden, auf der die entsprechenden Informationen im Text stehen.\n\n"
+    "Wähle eine Sinnvolle Anzahl an Fragen aus. Beispielsweise ist es bei manchen Seiten sinnvoller zwei Fragen zu stellen und bei anderen nur eine."
     
     "Vermeide Fragen wie: 'Welche Informationen stehen auf Seite X?' oder 'Welches Datum stand auf der Folie?'. "
     "Diese Fragen sind nicht sinnvoll, da sie nicht von einer Person ohne direkten Textzugriff beantwortet werden können. "
