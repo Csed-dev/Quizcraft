@@ -9,7 +9,7 @@ from flask import Flask, render_template, request, redirect, session, url_for, f
 from pdf_processing import extract_pages, validate_pages
 from api_interaction import configure_genai_api
 from create_google_form import get_questions_by_ids, generate_google_form, generate_qr_code, get_questions_from_db
-from app_database import get_extracted_texts, delete_text_from_db, get_extracted_questions, delete_question_from_db, Session, create_module_tables, get_total_pages_for_module, get_existing_pages
+from app_database import table_cache, get_extracted_texts, delete_text_from_db, get_extracted_questions, delete_question_from_db, Session, create_module_tables, get_total_pages_for_module, get_existing_pages
 from create_questions import configure_genai_api, generate_and_save_questions_for_page
 from quick_form import quick_generate_google_form, quick_generate_questions, quick_text_extract_from_pdf
 from googleapiclient.discovery import build, service_account
