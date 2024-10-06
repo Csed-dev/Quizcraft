@@ -47,7 +47,9 @@ pip install -r requirements.txt
 1. **gen-lang-client-XXXXX.json**:  
    You need a Google Cloud API service account file (`gen-lang-client-XXXXX.json`) to connect to the Google services. This file should be placed in the root directory of the project.
 
-2. **email_give_edit_permission.json**:  
+In addition to that, you need to set the File-Path at the top of the 'create_google_form.py'
+
+3. **email_give_edit_permission.json**:  
    This file should contain the list of users who will be available for permission sharing when creating Google Forms. The format is as follows:
 
    ```json
@@ -67,7 +69,7 @@ pip install -r requirements.txt
 
    Replace the sample data with your actual email addresses.
 
-3. **.env file**:  
+4. **.env file**:  
    You need to create a `.env` file to store your API key securely. Add the following line to your `.env` file:
 
    ```
