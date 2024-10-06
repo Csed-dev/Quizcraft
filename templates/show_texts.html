@@ -78,26 +78,23 @@
                         <ul class="list-group">
                             {% for text in texts %}
                                 <li class="list-group-item d-flex align-items-center">
-                                    <input class="form-check-input text-checkbox" type="checkbox" name="selected_pages" value="{{ text.page }}">
-                                    <div>
+                                    <input class="form-check-input text-checkbox me-3" type="checkbox" name="selected_pages" value="{{ text.page }}">
+                                    <div style="width: 100%;">
                                         <strong>Seite:</strong> {{ text.page }} <br>
-                                        <strong>Text:</strong> {{ text.text }} <br>
+                                        <div contenteditable="true" id="text-{{ text.page }}" onfocus="showSaveButton('{{ text.page }}')" style="display: inline-block; width: 100%;">
+                                            {{ text.text }}
+                                        </div>
+                                        <button type="button" class="btn btn-primary mt-2 d-none" id="save-button-{{ text.page }}" onclick="saveText('{{ text.page }}')">
+                                            Speichern
+                                        </button>
                                     </div>
                                 </li>
                             {% endfor %}
                         </ul>
+                        
+                        
                     </div>
-                </form>
-                
-                <script>
-                    function toggleSelectAll(source) {
-                        var checkboxes = document.querySelectorAll('.text-checkbox');
-                        checkboxes.forEach(function(checkbox) {
-                            checkbox.checked = source.checked;
-                        });
-                    }
-                </script>
-                
+                </form>                
                 {% endif %}
             </div>
         </div>
@@ -110,5 +107,40 @@
                 checkbox.checked = source.checked;
             });
         }
+
+        // Funktion zum Anzeigen des Speichern-Buttons beim Bearbeiten eines Textes
+        function showSaveButton(page) {
+            document.getElementById('save-button-' + page).classList.remove('d-none');
+        }
+
+        // Funktion zum Speichern des aktualisierten Textes
+        function saveText(page) {
+            var updatedText = document.getElementById('text-' + page).textContent;
+
+            fetch('/update_text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                },
+                body: new URLSearchParams({
+                    'page': page,
+                    'updated_text': updatedText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Flash message (replace alert with flash)
+                    console.log('Text updated successfully');
+                } else {
+                    alert('Failed to update text: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
     </script>
 {% endblock %}

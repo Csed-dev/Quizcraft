@@ -98,11 +98,12 @@
                                            data-question-id="{{ question.id }}" style="cursor: pointer;"></i>
                                         <div>
                                             <strong>Seite:</strong> {{ question.seite }} <strong>Id:</strong> {{ question.id }} <br>
-                                            <strong>Frage:</strong> {{ question.frage }} <br>
+                                            <div contenteditable="true" id="question-{{ question.id }}" onfocus="showSaveButton('{{ question.id }}')">{{ question.frage }}</div>
+                                            <button type="button" class="btn btn-primary mt-2 d-none" id="save-button-{{ question.id }}" onclick="saveQuestion('{{ question.id }}')">Speichern</button>
                                         </div>
                                     </li>
                                 {% endfor %}
-                            </ul>
+                            </ul>                      
                         </div>
                     </form>
                 {% endif %}
@@ -167,5 +168,50 @@
             });
         }
 
+        document.addEventListener('DOMContentLoaded', function() {
+    // Klick auf die Frage, um sie bearbeitbar zu machen
+    const questionTexts = document.querySelectorAll('.question-text');
+    questionTexts.forEach(function(element) {
+        element.addEventListener('click', function() {
+            const questionId = element.getAttribute('data-question-id');
+            document.getElementById('question-text-' + questionId).classList.add('d-none');
+            document.getElementById('edit-question-' + questionId).classList.remove('d-none');
+            document.getElementById('save-button-' + questionId).classList.remove('d-none');
+        });
+    });
+});
+
+// Funktion zum Anzeigen des Speichern-Buttons beim Bearbeiten einer Frage
+    function showSaveButton(questionId) {
+            document.getElementById('save-button-' + questionId).classList.remove('d-none');
+        }
+
+    // Funktion zum Speichern der aktualisierten Frage
+    function saveQuestion(questionId) {
+        var updatedQuestion = document.getElementById('question-' + questionId).textContent;
+
+        fetch('/update_question', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token() }}'
+            },
+            body: new URLSearchParams({
+                'question_id': questionId,
+                'updated_question': updatedQuestion
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                //alert('Question updated successfully');
+            } else {
+                alert('Failed to update question: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
     </script>
 {% endblock %}

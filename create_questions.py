@@ -1,7 +1,7 @@
 import os
 import json
 import google.generativeai as genai
-from app_database import create_module_tables, Session
+from app_database import create_module_tables, Session, get_total_pages_for_module
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -31,9 +31,17 @@ def configure_genai_api():
 def generate_questions(model, pdf_text):
     prompt = (
         "Aufgabe:\n"
-        "Erstelle eine Liste von spezifischen, inhaltlich präzisen Fragen, die direkt aus dem folgenden Text abgeleitet werden können. "
-        "Die Fragen sollen ausschließlich auf die Inhalte des Textes bezogen sein und keine externen Informationen beinhalten. Das heißt, dass die Fragen von dem übergegebenen Text beantwortet werden können."
-        "Jede Frage soll geeignet sein, um das Verständnis von Informatik-Studierenden zu prüfen und relevant für die Vorlesung sein.\n\n"
+        "Erstelle eine Liste von präzisen, inhaltlich spezifischen Fragen, die direkt aus dem folgenden Text "
+    "ableitbar sind. Jede Frage muss sich ausschließlich auf den Textinhalt beziehen und darf keine externen "
+    "Informationen voraussetzen. Die Fragen müssen aus dem Text beantwortbar sein, ohne dass zusätzliche "
+    "Kenntnisse erforderlich sind.\n\n"
+    
+    "Die Fragen sollen das Verständnis von Informatik-Studierenden prüfen und thematisch relevant zur Vorlesung sein. "
+    "Jede Frage muss eindeutig der Seite zugeordnet werden, auf der die entsprechenden Informationen im Text stehen.\n\n"
+    
+    "Vermeide Fragen wie: 'Welche Informationen stehen auf Seite X?' oder 'Welches Datum stand auf der Folie?'. "
+    "Diese Fragen sind nicht sinnvoll, da sie nicht von einer Person ohne direkten Textzugriff beantwortet werden können. "
+    "Stattdessen soll die Frage den Inhalt selbst betreffen, z.B.: 'Was ist Data Science?', nicht: 'Auf welcher Folie wird Data Science erklärt?'.\n\n"
         
         "Anleitung:\n"
         "1. Lies den bereitgestellten Text aufmerksam durch.\n"

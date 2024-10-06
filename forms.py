@@ -25,11 +25,11 @@ class QuestionForm(FlaskForm):
     max_output_tokens = IntegerField(
         'Maximale Ausgabetokens', 
         default=2048, 
-        validators=[NumberRange(min=1, max=10000, message="Maximale Ausgabetokens müssen mindestens 1 sein.")]
+        validators=[NumberRange(min=1, max=8192, message="Maximale Ausgabetokens müssen mindestens 1 sein.")]
     )
     temperature = FloatField(
         'Temperatur', 
-        default=0.2, 
+        default=0.20, 
         validators=[NumberRange(min=0, max=1, message="Temperatur muss zwischen 0 und 1 liegen.")]
     )
     top_k = IntegerField(

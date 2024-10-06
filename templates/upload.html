@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center my-5">
+    <div class="card shadow p-4" style="width: 100%; max-width: 600px; border-radius: 10px;">
+        <div class="card-body">
+            <h1 class="card-title text-center mb-3">PDF Hochladen</h1>
+            <!-- onsubmit-Event hinzugefügt -->
+            <form method="POST" enctype="multipart/form-data" onsubmit="showSpinner()">
+                {{ form.hidden_tag() }}
+                <div class="form-group mb-3">
+                    <strong><label for="module" class="form-label">{{ form.module.label.text }}<span class="text-danger">*</span></label></strong>
+                    {{ form.module(class="form-control", id="module") }}
+                </div>
+                <div class="mb-3">
+                    <strong><label for="formFile" class="form-label">{{ form.pdf_file.label.text }}<span class="text-danger">*</span></label></strong>
+                    {{ form.pdf_file(class="form-control", id="formFile") }}
+                </div>
+                <hr>
+                <div class="form-group">
+                    <label for="changes" class="form-label">{{ form.changes.label.text }}</label>
+                    {{ form.changes(class="form-check-input", id="changes", onchange="togglePagesField()") }}
+                </div>
+                <div class="form-group mb-3" id="pagesField" style="display: none;">
+                    <strong><label for="pages" class="form-label">{{ form.pages.label.text }}<span class="text-danger">*</span><span data-bs-toggle="tooltip" data-bs-placement="right" 
+                        title="Geben Sie die Seiten als durch Kommas und / oder Bindestrich getrennte Liste ein, z.B. 5,6,10-12. Sie können Leerzeichen einfügen oder weglassen.">
+                      <i class="bi bi-question-circle" style="font-size: 1.2rem; color: #007bff;"></i>
+                  </span></label></strong>
+                    {{ form.pages(class="form-control", id="pages", placeholder="5,6,10-12") }}
+                </div>
+                <div class="form-group text-center mt-3">
+                    <button type="submit" class="btn btn-primary btn-lg w-100" 
+                        data-bs-toggle="tooltip" 
+                        data-bs-placement="top" 
+                        title="Es werden immer alle noch nicht extrahierten Seiten automatisch extrahiert.">
+                        {{ form.submit.label.text }}
+                    </button>
+                </div>
+            </form>
+
+            <!-- Spinner, der beim Erstellen des Formulars angezeigt wird -->
+            <div id="loadingSpinner" class="text-center mt-3" style="display:none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Lädt...</span>
+                </div>
+                <p class="mt-2">
+                    Der Text wird extrahiert, bitte warten...<br>
+                    10 Seiten / 30 Sekunden
+                </p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="mt-4">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePagesField() {
+        var changesCheckbox = document.getElementById('changes');
+        var pagesField = document.getElementById('pagesField');
+        
+        if (changesCheckbox.checked) {
+            pagesField.style.display = 'block';
+        } else {
+            pagesField.style.display = 'none';
+        }
+    }
+
+    // Falls das Feld bereits beim Laden der Seite angekreuzt ist, sollte das Seitenfeld angezeigt werden.
+    window.onload = function() {
+        togglePagesField();
+    };
+</script>
+{% endblock %}

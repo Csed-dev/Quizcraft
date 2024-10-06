@@ -16,15 +16,15 @@ def create_module_tables(module_name):
 
     class DynamicTextTable(Base):
         __tablename__ = f'{module_name}_texts'
-        __table_args__ = {'extend_existing': True}  # Existierende Tabelle erweitern
+        __table_args__ = {'extend_existing': True}
         page = Column(Integer, primary_key=True, nullable=False)
         text = Column(Text, nullable=False)
 
     class DynamicQuestionTable(Base):
         __tablename__ = f'{module_name}_questions'
-        __table_args__ = {'extend_existing': True}  # Existierende Tabelle erweitern
+        __table_args__ = {'extend_existing': True}
         id = Column(Integer, primary_key=True)
-        seite = Column(Integer, nullable=False)  # String, um mehrere Seiten zu speichern (z.B. "1,2,3-5")
+        seite = Column(Integer, nullable=False)
         frage = Column(Text, nullable=False)
         starred = Column(Boolean, default=False)
 
@@ -63,31 +63,31 @@ def retrieve_page_text(module_name, page):
     session.close()  # Session schließen
     return page_entry.text if page_entry else None
 
-def save_questions_to_db(module_name, questions_json):
-    session = Session()  # Erstelle eine neue Session für diese Funktion
-    _, QuestionTable = create_module_tables(module_name)
-    questions = json.loads(questions_json)
+# def save_questions_to_db(module_name, questions_json):
+#     session = Session()  # Erstelle eine neue Session für diese Funktion
+#     _, QuestionTable = create_module_tables(module_name)
+#     questions = json.loads(questions_json)
     
-    for question_data in questions:
-        seiten = question_data.get("seiten", "undefined")
-        question = QuestionTable(
-            kapitel=question_data["kapitel"],
-            thema=question_data["thema"],
-            frage=question_data["frage"],
-            antwort=question_data["antwort"],
-            seiten=seiten,
-            erstellungsdatum=datetime.datetime.now(),
-            fragetyp=question_data.get("fragetyp", "Standard"),
-            letzter_aufruf=datetime.datetime.now(),
-            status="In Überprüfung",
-            bewertung="unbewertet",
-            punkteanzahl=0,
-            wiederholungen=0
-        )
-        session.add(question)
+#     for question_data in questions:
+#         seiten = question_data.get("seiten", "undefined")
+#         question = QuestionTable(
+#             kapitel=question_data["kapitel"],
+#             thema=question_data["thema"],
+#             frage=question_data["frage"],
+#             antwort=question_data["antwort"],
+#             seiten=seiten,
+#             erstellungsdatum=datetime.datetime.now(),
+#             fragetyp=question_data.get("fragetyp", "Standard"),
+#             letzter_aufruf=datetime.datetime.now(),
+#             status="In Überprüfung",
+#             bewertung="unbewertet",
+#             punkteanzahl=0,
+#             wiederholungen=0
+#         )
+#         session.add(question)
 
-    session.commit()
-    session.close()  # Session schließen
+#    session.commit()
+#    session.close()  # Session schließen
 
 def extract_text_from_pdf_pages(module_name, pages=None):
     session = Session()  # Erstelle eine neue Session für diese Funktion

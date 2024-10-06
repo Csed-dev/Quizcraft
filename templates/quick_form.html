@@ -12,6 +12,7 @@ Quick Form Generator
                 <form method="POST" enctype="multipart/form-data" onsubmit="showSpinner()">
                     {{ form.hidden_tag() }}
                     <p class="text-center text-muted small">(Es wird nichts gespeichert)</p>
+                    <div class="text-center alert alert-danger" role="alert">Wird nicht empfohlen. Grund: Fehler- und Buganfällig</div>
                     
                     <div class="form-group mb-3">
                         <strong>{{ form.module_name.label(class="form-label") }}</strong>

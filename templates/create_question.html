@@ -14,8 +14,8 @@ Create Questions
                     
                     <div class="form-group mb-3">
                         <strong>{{ form.module.label(class="form-label") }}<span class="text-danger">*</span></strong>
-                        {{ form.module(class="form-control") }}
-                    </div>
+                        {{ form.module(class="form-control", id="module") }}
+                    </div>      
 
                     <div class="form-group mb-3">
                         <strong>{{ form.pages.label(class="form-label") }}<span class="text-danger">*</span><span data-bs-toggle="tooltip" data-bs-placement="right" 
@@ -33,7 +33,7 @@ Create Questions
                         </span>
                         <div class="input-group">
                             <button type="button" class="btn btn-outline-dark" onclick="decreaseValue('temperature', 0.1)">-</button>
-                            {{ form.temperature(class="form-control", step="0.05", min="0", max="1") }}
+                            {{ form.temperature(class="form-control", step="0.05", min="0", max="1", placeholder="0.20") }}
                             <button type="button" class="btn btn-outline-dark" onclick="increaseValue('temperature', 0.1)">+</button>
                         </div>
                     </div>
@@ -46,7 +46,7 @@ Create Questions
                         </span>
                         <div class="input-group">
                             <button type="button" class="btn btn-outline-dark" onclick="decreaseValue('top_p', 0.05)">-</button>
-                            {{ form.top_p(class="form-control", step="0.05", min="0", max="1") }}
+                            {{ form.top_p(class="form-control", step="0.05", min="0", max="1", placeholder="0.95") }}
                             <button type="button" class="btn btn-outline-dark" onclick="increaseValue('top_p', 0.05)">+</button>
                         </div>
                     </div>
@@ -64,12 +64,12 @@ Create Questions
                             title="Die maximale Anzahl an Tokens, die das Modell in der Antwort generieren darf. 100 Tokens entsprechen etwa 20 Wörtern.">
                             <i class="bi bi-question-circle" style="font-size: 1.2rem; color: #007bff;"></i>
                         </span></strong>
-                        {{ form.max_output_tokens(class="form-control", placeholder="256") }}
+                        {{ form.max_output_tokens(class="form-control", placeholder="2048") }}
                     </div>
                     
                     <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary btn-lg w-100">Fragen erstellen</button>
-                    </div>
+                    </div>                  
                 </form>
 
                 <!-- Spinner, der beim Erstellen der Fragen angezeigt wird -->

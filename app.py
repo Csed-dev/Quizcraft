@@ -6,11 +6,10 @@ import PyPDF2
 from flask_wtf import CSRFProtect
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, session, url_for, flash, send_file, jsonify
-from get_memes import get_memes
 from pdf_processing import extract_pages, validate_pages
 from api_interaction import configure_genai_api
 from create_google_form import get_questions_by_ids, generate_google_form, generate_qr_code, get_questions_from_db
-from app_database import get_extracted_texts, delete_text_from_db, get_extracted_questions, delete_question_from_db, Session, create_module_tables, get_total_pages_for_module
+from app_database import get_extracted_texts, delete_text_from_db, get_extracted_questions, delete_question_from_db, Session, create_module_tables, get_total_pages_for_module, get_existing_pages
 from create_questions import configure_genai_api, generate_and_save_questions_for_page
 from quick_form import quick_generate_google_form, quick_generate_questions, quick_text_extract_from_pdf
 from googleapiclient.discovery import build, service_account
@@ -105,9 +104,6 @@ def create_question():
 
     # Keine Fragen generieren, nur Formular anzeigen
     return render_template('create_question.html', form=form)
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/', methods=['GET', 'POST'])
 def quick_form():
@@ -302,25 +298,49 @@ def delete_texts():
     flash('Ausgewählte Texte wurden erfolgreich gelöscht.', 'success')
     return redirect(url_for('show_texts', module=module))
 
+@app.route('/update_text', methods=['POST'])
+def update_text():
+    page = request.form.get('page')
+    updated_text = request.form.get('updated_text')
 
-@app.route('/delete_questions', methods=['POST'])
-def delete_questions():
-    selected_questions = request.form.getlist('selected_questions')
-    module = request.form.get('module')
-    form = ShowQuestionsForm()  # Verwenden Sie das richtige Formular
-    questions = None
+    if not page or not updated_text:
+        return jsonify({'success': False, 'message': 'Missing data'}), 400
 
-    if selected_questions and module:
-        for question_id in selected_questions:
-            delete_question_from_db(module, int(question_id))
-        flash(f'{len(selected_questions)} Frage(n) wurde(n) erfolgreich gelöscht.', 'success')
-    else:
-        flash('Es wurden keine Fragen zum Löschen ausgewählt oder Modul fehlt.', 'warning')
+    try:
+        session = Session()
 
-    # Fragen erneut abrufen
-    questions = get_extracted_questions(module)
+        # Finde den Text für die gegebene Seite
+        text_entry = None
+        for module_name in table_cache:
+            TextTable, _ = create_module_tables(module_name)
+            text_entry = session.query(TextTable).filter_by(page=page).first()
+            if text_entry:
+                break
 
-    return render_template('show_questions.html', form=form, module_name=module, questions=questions)
+        if not text_entry:
+            return jsonify({'success': False, 'message': 'Text not found'}), 404
+
+        # Bereinige den aktualisierten Text: Entfernt überflüssige Leerzeichen und Zeilenumbrüche
+        cleaned_text = clean_input_text(updated_text)
+
+        # Prüfe, ob der bereinigte Text sich von dem existierenden Text unterscheidet
+        if cleaned_text == text_entry.text.strip():
+            return jsonify({'success': False, 'message': 'No changes detected'}), 200
+
+        # Aktualisiere den Text in der Datenbank, wenn es Unterschiede gibt
+        text_entry.text = cleaned_text
+        session.commit()
+
+        return jsonify({'success': True, 'message': 'Text updated successfully'})
+    except Exception as e:
+        session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        session.close()
+
+# Funktion zum Bereinigen des Textes
+def clean_input_text(text):
+    return ' '.join(text.split()).strip()
 
 @app.route('/show_questions', methods=['GET', 'POST'])
 def show_questions():
@@ -384,6 +404,25 @@ def show_questions():
 
     return render_template('show_questions.html', form=form, module_name=module, questions=questions, sort_starred=sort_starred)
 
+@app.route('/delete_questions', methods=['POST'])
+def delete_questions():
+    selected_questions = request.form.getlist('selected_questions')
+    module = request.form.get('module')
+    form = ShowQuestionsForm()  # Verwenden Sie das richtige Formular
+    questions = None
+
+    if selected_questions and module:
+        for question_id in selected_questions:
+            delete_question_from_db(module, int(question_id))
+        flash(f'{len(selected_questions)} Frage(n) wurde(n) erfolgreich gelöscht.', 'success')
+    else:
+        flash('Es wurden keine Fragen zum Löschen ausgewählt oder Modul fehlt.', 'warning')
+
+    # Fragen erneut abrufen
+    questions = get_extracted_questions(module)
+
+    return render_template('show_questions.html', form=form, module_name=module, questions=questions)
+
 @app.route('/toggle_starred', methods=['POST'])
 def toggle_starred():
     data = request.get_json()
@@ -409,6 +448,39 @@ def toggle_starred():
             return jsonify({'success': False, 'error': str(e)})
     else:
         return jsonify({'success': False, 'error': 'Ungültige Daten'})
+
+@app.route('/update_question', methods=['POST'])
+def update_question():
+    question_id = request.form.get('question_id')
+    updated_question_text = request.form.get('updated_question')
+
+    if not question_id or not updated_question_text:
+        return jsonify({'success': False, 'message': 'Missing data'}), 400
+
+    try:
+        session = Session()
+
+        # Frage in der Datenbank finden, um das Modul herauszufinden
+        question_entry = None
+        for module_name in table_cache:
+            _, QuestionTable = create_module_tables(module_name)
+            question_entry = session.query(QuestionTable).filter_by(id=question_id).first()
+            if question_entry:
+                break
+
+        if not question_entry:
+            return jsonify({'success': False, 'message': 'Question not found'}), 404
+
+        # Aktualisiere den Fragetext
+        question_entry.frage = updated_question_text
+        session.commit()
+
+        return jsonify({'success': True, 'message': 'Question updated successfully'})
+    except Exception as e:
+        session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        session.close()
 
 @app.route('/create_google_form', methods=['GET', 'POST'])
 def create_google_form():
@@ -462,24 +534,6 @@ def create_google_form():
             flash('Fehler bei der Erstellung des Google Formulars.', 'danger')
 
     return render_template('create_google_form.html', form=form)
-
-# @app.route('/generate_qr', methods=['GET', 'POST'])
-# def generate_qr():
-#     if request.method == 'POST':
-#         link = request.form.get('link')
-#         if not link:
-#             flash('Bitte geben Sie einen gültigen Link ein.', 'danger')
-#             return redirect(url_for('generate_qr'))
-
-#         # QR-Code generieren
-#         img = qrcode.make(link)
-#         buffered = io.BytesIO()
-#         img.save(buffered, format="PNG")
-#         qr_code_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
-
-#         return render_template('generate_qr.html', qr_code=qr_code_base64, link=link)
-#     else:
-#         return render_template('generate_qr.html')
 
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):
