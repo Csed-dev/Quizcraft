@@ -129,6 +129,7 @@ flask run
 
 The app will be available at `http://127.0.0.1:5000/`.
 
+As first, you need to upload a PDF that will be extracted. Then you can generate Questions and after that you may create a Google-Form.
 
 ## License
 
