@@ -16,7 +16,7 @@ Before running this project, ensure you have the following:
 
 1. **Python 3.12+** installed on your system.
 2. A Google Cloud Project set up with **access to Google APIs** (explained below).
-3. **gen-lang-client-XXXXX.json** file for authentication with Google APIs.
+3. **Google Service Account JSON** file for authentication with Google APIs.
 4. **email_give_edit_permission.json** file for assigning permissions (explained below).
 5. **tesseract** installed and included in your system's PATH (explained below).
 
@@ -44,8 +44,8 @@ pip install -r requirements.txt
 
 ### 4. Required Files
 
-1. **gen-lang-client-XXXXX.json**:  
-   You need a Google Cloud API service account file (`gen-lang-client-XXXXX.json`) to connect to the Google services. This file should be placed in the root directory of the project.
+1. **Service Account File.json**:  
+   You need a Google Cloud API service account file to connect to the Google services. This file should be placed in the root directory of the project.
 
 In addition to that, you need to set the File-Path at the top of the 'create_google_form.py'
 
